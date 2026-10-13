@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CoalTrack | Midwest Coal Plants</title>
+<meta name="description" content="Explore coal plant status, retirement, and conversion across the Midwest.">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<link rel="stylesheet" href="style.css">
+<script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script defer src="app.js"></script>
+</head>
+<body>
+<div class="shell">
+ <aside class="sidebar" id="sidebar">
+  <div class="brand"><span class="brand-icon">◉</span><div><strong>CoalTrack</strong><small>MIDWEST ENERGY</small></div></div>
+  <div class="sidebar-scroll">
+   <section class="filter-box"><div class="eyebrow">Explore plants</div>
+    <label for="state">State</label><select id="state"><option value="all">All states</option></select>
+    <label for="status">Plant status</label><select id="status"><option value="all">All statuses</option></select>
+    <label for="capacity-min">Minimum capacity <span id="capacity-display" class="value">0 MW</span></label><input id="capacity-min" type="range" min="0" max="3200" step="50" value="0">
+    <label for="search">Find a plant</label><input id="search" type="search" placeholder="Name, city, or owner…">
+    <button id="reset" class="link-button">↻ Reset all filters</button>
+   </section>
+   <section><div class="eyebrow">Quick stats</div><div class="stat"><small>Plants shown</small><strong id="count">—</strong></div><div class="stat"><small>Total capacity (MW)</small><strong id="total-capacity">—</strong></div><div class="stat-row"><div class="stat"><small>Operating*</small><strong id="operating-count">—</strong></div><div class="stat"><small>Retired</small><strong id="retired-count">—</strong></div></div></section>
+   <section><div class="eyebrow">Capacity by state</div><div id="state-bars" class="bars"></div></section>
+   <section><div class="eyebrow">Status legend</div><div id="legend" class="legend"></div><small class="disclaimer">*Includes operating plants with retirement and/or conversion activity. The categories summarize the source status, not independently verified current operations.</small></section>
+  </div>
+  <footer>Source dataset: Midwest Coalplants · May 2025<br>Statuses may have changed since collection.</footer>
+ </aside>
+ <main class="main">
+  <header class="toolbar"><div class="toolbar-left"><button id="toggle-sidebar" class="tool-button mobile-only">☰ Filters</button><div class="view-buttons"><button data-view="split" class="tool-button active">Split</button><button data-view="map" class="tool-button">Map</button><button data-view="table" class="tool-button">Table</button></div><span class="shown" id="record-count">Loading plants…</span></div>
+   <div class="toolbar-right"><label for="basemap" class="sr-only">Basemap</label><select id="basemap" class="basemap-select"><option value="osm">Street map</option><option value="esri">Satellite</option><option value="topo">Terrain</option></select><button id="fit" class="tool-button">⤢ Fit</button></div>
+  </header>
+  <div id="workspace" class="workspace split"><div class="map-wrap"><div id="map" role="application" aria-label="Interactive map of Midwest coal plants"></div><div id="map-status" class="map-error" hidden></div><div class="map-credit">Marker area represents reported capacity (MW)</div></div><section class="table-wrap"><div class="table-title"><strong>Plant registry</strong><span id="table-count"></span></div><div class="table-scroll"><table><thead><tr><th data-sort="name">Plant ↕</th><th data-sort="state">State ↕</th><th data-sort="capacity">Capacity ↕</th><th data-sort="category">Status ↕</th></tr></thead><tbody id="plant-rows"></tbody></table></div></section></div>
+ </main>
+</div>
+<dialog id="details"><button class="close-modal" id="close-details" aria-label="Close details">×</button><div id="detail-body"></div></dialog>
+</body></html>
