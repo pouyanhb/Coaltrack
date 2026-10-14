@@ -1,6 +1,6 @@
 # CoalTrack
 
-Coal plant map for Environmental Law & Policy Center P2P+RE by Pouyan Hatami.
+Coal plant map for Environmental Law & Policy Center P2P+RE. Created by Pouyan Hatami.
 
 The site runs on GitHub Pages. `index.html` is the page, `style.css` handles appearance, `app.js` handles filters and the map, and `data/plants.csv` contains the records.
 
