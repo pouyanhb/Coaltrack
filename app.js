@@ -13,6 +13,7 @@ const BASEMAPS = {
  esri:{url:'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',attr:'Tiles &copy; Esri',maxZoom:19},
  topo:{url:'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',attr:'&copy; <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA) &amp; OpenStreetMap contributors',subdomains:'abc',maxZoom:17}
 };
+let basemapOpacity=0.7;
 let plants=[],filtered=[],map,markers,tiles,currentSort={key:'name',direction:1},hasSetBounds=false;
 const $=id=>document.getElementById(id);
 const nf=n=>Math.round(n).toLocaleString('en-US');
@@ -50,7 +51,7 @@ function getData(row,i){
 function safe(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function cat(id){return CATEGORIES.find(c=>c.id===id)||CATEGORIES[5];}
 function pill(id){const c=cat(id);return `<span class="pill" style="border-color:${c.color}88;background:${c.color}20;color:${c.color}">${safe(c.label)}</span>`;}
-function setTiles(id){if(!map)return;if(tiles)map.removeLayer(tiles);const b=BASEMAPS[id]||BASEMAPS.osm;tiles=L.tileLayer(b.url,{attribution:b.attr,maxZoom:b.maxZoom,subdomains:b.subdomains||'',crossOrigin:true});tiles.on('tileerror',()=>{$('map-status').hidden=false;$('map-status').textContent='Some background tiles could not load. Try a different basemap from the menu.';});tiles.on('load',()=>{$('map-status').hidden=true;});tiles.addTo(map);}
+function setTiles(id){if(!map)return;if(tiles)map.removeLayer(tiles);const b=BASEMAPS[id]||BASEMAPS.osm;tiles=L.tileLayer(b.url,{attribution:b.attr,maxZoom:b.maxZoom,subdomains:b.subdomains||'',crossOrigin:true,opacity:basemapOpacity});tiles.on('tileerror',()=>{$('map-status').hidden=false;$('map-status').textContent='Some background tiles could not load. Try a different basemap from the menu.';});tiles.on('load',()=>{$('map-status').hidden=true;});tiles.addTo(map);}
 function initMap(){
  if(typeof L==='undefined')throw Error('Leaflet could not load. Check your internet connection.');
  map=L.map('map',{center:[42.5,-91],zoom:5,minZoom:3,maxZoom:18,zoomControl:false,preferCanvas:true});
@@ -58,6 +59,7 @@ function initMap(){
  markers=L.layerGroup().addTo(map);setTiles('osm');
  map.on('moveend',()=>{if($('workspace').classList.contains('table'))return;updateTable();});
  $('basemap').addEventListener('change',e=>setTiles(e.target.value));
+ $('basemap-opacity').addEventListener('input',e=>{basemapOpacity=Number(e.target.value)/100;const text=`${e.target.value}%`;$('opacity-label').textContent=text;$('opacity-value').textContent=text;if(tiles)tiles.setOpacity(basemapOpacity);});
  $('fit').addEventListener('click',fitToFiltered);
 }
 function markerRadius(capacity){return Math.min(20,Math.max(4,Math.sqrt(Math.max(0,capacity))*0.15+4));}

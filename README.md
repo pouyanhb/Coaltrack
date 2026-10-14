@@ -11,3 +11,5 @@ Plant statuses and capacities come from the May 2025 dataset, including faciliti
 The basemaps come from OpenStreetMap, Esri and OpenTopoMap. These external services may change their access policies. The JavaScript map library (Leaflet) is also loaded from an external CDN.
 
 For local testing, run `python -m http.server 8000` inside this folder and open http://localhost:8000. Double-clicking `index.html` can block loading the CSV.
+
+Basemap opacity: open the Opacity control in the top toolbar. The slider defaults to 70% and adjusts the background map only. Switching between Street, Satellite, and Terrain retains the chosen value.

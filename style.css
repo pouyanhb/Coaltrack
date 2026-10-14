@@ -14,3 +14,16 @@
 @media(max-width:1050px){.shown{display:inline-flex;font-size:13px;padding:7px 9px;margin-left:5px}}
 @media(max-width:760px){.toolbar{gap:5px}.shown{font-size:12px;padding:6px 8px;margin-left:2px}.toolbar-left{gap:3px}.toolbar-right{gap:3px}}
 @media(max-width:520px){.shown{font-size:11px;padding:5px 6px}.toolbar{padding:5px}.view-buttons .tool-button{padding:6px 5px}}
+
+/* Basemap opacity control: affects background tiles only, never coal-plant markers. */
+.opacity-menu{position:relative;flex-shrink:0}
+.opacity-menu summary{display:list-item;list-style:none;cursor:pointer;user-select:none}
+.opacity-menu summary::-webkit-details-marker{display:none}
+.opacity-menu summary:after{content:' ▾';color:#b4c3d8}
+.opacity-menu[open] summary{background:#2a4572;border-color:#5486e5}
+.opacity-panel{position:absolute;right:0;top:calc(100% + 9px);z-index:1100;width:245px;padding:15px;background:#171e2b;border:1px solid #46536a;border-radius:11px;box-shadow:0 12px 32px #0009;color:#e7edf7}
+.opacity-panel label{display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:650;gap:10px}
+.opacity-panel output{color:#93baff;font-variant-numeric:tabular-nums}
+.opacity-panel input[type=range]{width:100%;margin:15px 0 6px;accent-color:#649dff;cursor:pointer}
+.opacity-endpoints{display:flex;justify-content:space-between;font-size:10px;color:#adb9cc}
+@media(max-width:760px){.opacity-panel{right:-48px;width:min(245px,80vw)}.opacity-menu summary{font-size:11px;padding:7px}}
