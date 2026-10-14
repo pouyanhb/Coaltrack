@@ -13,7 +13,7 @@ const BASEMAPS = {
  esri:{url:'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',attr:'Tiles &copy; Esri',maxZoom:19},
  topo:{url:'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',attr:'&copy; <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA) &amp; OpenStreetMap contributors',subdomains:'abc',maxZoom:17}
 };
-let basemapOpacity=0.7;
+let basemapOpacity=0.9;
 let plants=[],filtered=[],map,markers,tiles,currentSort={key:'name',direction:1},hasSetBounds=false;
 const $=id=>document.getElementById(id);
 const nf=n=>Math.round(n).toLocaleString('en-US');
