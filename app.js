@@ -2,14 +2,14 @@
 // CoalTrack: edit data/plants.csv, then publish. No build step required.
 const CATEGORIES = [
  {id:'operating',label:'Operating',color:'#10b981'},
- {id:'conversion',label:'Operating — Conversion',color:'#3b82f6'},
- {id:'retirement',label:'Operating — Retirement',color:'#f59e0b'},
- {id:'mixed',label:'Operating — Mixed Transition',color:'#a78bfa'},
+ {id:'conversion',label:'Operating with conversions',color:'#3b82f6'},
+ {id:'retirement',label:'Operating with retirements',color:'#f59e0b'},
+ {id:'mixed',label:'Operating with mixed changes',color:'#a78bfa'},
  {id:'retired',label:'Retired',color:'#f43f5e'},
  {id:'review',label:'Needs review',color:'#94a3b8'}
 ];
 const BASEMAPS = {
- osm:{url:'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',attr:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>',subdomains:'abc',maxZoom:19},
+ osm:{url:'https://tile.openstreetmap.org/{z}/{x}/{y}.png',attr:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>',subdomains:'abc',maxZoom:19},
  esri:{url:'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',attr:'Tiles &copy; Esri',maxZoom:19},
  topo:{url:'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',attr:'&copy; <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA) &amp; OpenStreetMap contributors',subdomains:'abc',maxZoom:17}
 };
@@ -72,7 +72,7 @@ function fitToFiltered(){if(!map)return;const valid=filtered.filter(p=>Number.is
 function apply(){const state=$('state').value,status=$('status').value,minimum=Number($('capacity-min').value),term=$('search').value.trim().toLowerCase();
  filtered=plants.filter(p=>(state==='all'||p.state===state)&&(status==='all'||p.category===status)&&p.capacity>=minimum&&(!term||[p.name,p.city,p.parent,p.county].some(t=>String(t).toLowerCase().includes(term))));
  $('capacity-display').textContent=nf(minimum)+' MW';
- $('count').textContent=nf(filtered.length);$('total-capacity').textContent=nf(filtered.reduce((s,p)=>s+p.capacity,0));$('operating-count').textContent=nf(filtered.filter(p=>p.category!=='retired'&&p.category!=='review').length);$('retired-count').textContent=nf(filtered.filter(p=>p.category==='retired').length);$('record-count').textContent=`${filtered.length} of ${plants.length} plants`;
+ $('count').textContent=nf(filtered.length);$('operating-count').textContent=nf(filtered.filter(p=>p.category!=='retired'&&p.category!=='review').length);$('retired-count').textContent=nf(filtered.filter(p=>p.category==='retired').length);$('record-count').textContent=`${filtered.length} of ${plants.length} plants`;
  paintMap();updateTable();updateBars();
 }
 function updateBars(){const agg={};for(const p of filtered)agg[p.state]=(agg[p.state]||0)+p.capacity;const sorted=Object.entries(agg).sort((a,b)=>b[1]-a[1]),max=Math.max(...sorted.map(x=>x[1]),1);$('state-bars').innerHTML=sorted.map(([s,n])=>`<div class="bar-row"><span>${safe(s)}</span><div class="bar-track"><div class="bar-fill" style="width:${Math.max(0,n/max*100)}%"></div></div><span>${(n/1000).toFixed(1)}k MW</span></div>`).join('')||'<small>No matching plants</small>';}
