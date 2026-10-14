@@ -72,13 +72,19 @@ function fitToFiltered(){if(!map)return;const valid=filtered.filter(p=>Number.is
 function apply(){const state=$('state').value,status=$('status').value,minimum=Number($('capacity-min').value),term=$('search').value.trim().toLowerCase();
  filtered=plants.filter(p=>(state==='all'||p.state===state)&&(status==='all'||p.category===status)&&p.capacity>=minimum&&(!term||[p.name,p.city,p.parent,p.county].some(t=>String(t).toLowerCase().includes(term))));
  $('capacity-display').textContent=nf(minimum)+' MW';
- $('count').textContent=nf(filtered.length);$('operating-count').textContent=nf(filtered.filter(p=>p.category!=='retired'&&p.category!=='review').length);$('retired-count').textContent=nf(filtered.filter(p=>p.category==='retired').length);$('record-count').textContent=`${filtered.length} of ${plants.length} plants`;
+ $('count').textContent=nf(filtered.length);$('operating-count').textContent=nf(filtered.filter(p=>p.category!=='retired'&&p.category!=='review').length);$('retired-count').textContent=nf(filtered.filter(p=>p.category==='retired').length);
  paintMap();updateTable();updateBars();
 }
 function updateBars(){const agg={};for(const p of filtered)agg[p.state]=(agg[p.state]||0)+p.capacity;const sorted=Object.entries(agg).sort((a,b)=>b[1]-a[1]),max=Math.max(...sorted.map(x=>x[1]),1);$('state-bars').innerHTML=sorted.map(([s,n])=>`<div class="bar-row"><span>${safe(s)}</span><div class="bar-track"><div class="bar-fill" style="width:${Math.max(0,n/max*100)}%"></div></div><span>${(n/1000).toFixed(1)}k MW</span></div>`).join('')||'<small>No matching plants</small>';}
 function updateTable(){let list=[...filtered];if(map&&!$('workspace').classList.contains('table')){const b=map.getBounds();list=list.filter(p=>b.contains([p.lat,p.lng]));}
  const k=currentSort.key,d=currentSort.direction;list.sort((a,b)=>typeof a[k]==='number'?(a[k]-b[k])*d:String(a[k]).localeCompare(String(b[k]))*d);
- $('table-count').textContent=`${list.length} in ${$('workspace').classList.contains('table')?'selection':'map view'}`;
+ // The prominent counter shows plants inside the current map viewport, not just sidebar matches.
+ // Table-only mode has no visible map, so show all records matching the sidebar filters.
+ const tableOnly=$('workspace').classList.contains('table');
+ $('record-count').textContent=tableOnly
+  ? `${filtered.length} of ${plants.length} plants`
+  : `${list.length} visible · ${filtered.length} match filters`;
+ $('table-count').textContent=`${list.length} in ${tableOnly?'selection':'map view'}`;
  $('plant-rows').innerHTML=list.map(p=>`<tr data-id="${p.id}"><td><div class="plant-name">${safe(p.name)}</div><div class="plant-city">${safe(p.city)}</div></td><td>${safe(p.state)}</td><td>${nf(p.capacity)}</td><td>${pill(p.category)}</td></tr>`).join('')||'<tr><td colspan="4">No plants match this view.</td></tr>';
 }
 function section(title,value){if(!value||String(value).trim().toLowerCase()==='na')return '';return `<section class="detail-section"><h3>${safe(title)}</h3><p>${safe(value)}</p></section>`;}
